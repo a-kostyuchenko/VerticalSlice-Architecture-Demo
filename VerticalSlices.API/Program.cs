@@ -1,10 +1,16 @@
 using Carter;
 using FluentValidation;
+using Microsoft.EntityFrameworkCore;
+using VerticalSlices.API.Database;
+using VerticalSlices.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddDbContext<ApplicationDbContext>(opt =>
+    opt.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
 
 var assembly = typeof(Program).Assembly;
 
@@ -20,6 +26,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    
+    app.ApplyMigrations();
 }
 
 app.MapCarter();
